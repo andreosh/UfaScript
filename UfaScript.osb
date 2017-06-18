@@ -2270,6 +2270,9 @@
   Запись = Новый ЗаписьТекста;  Запись.Открыть(ИмяФайла);  Возврат Запись;
 КонецФункции
 
+Функция ЗаменаОдинарныхКавычек(Текст)
+   Возврат СтрЗаменить(Текст,"'","&#039");;
+КонецФункции
 
 //---------------------  Функции PHP ------------------------------------------------------------------
 Функция PHPСтрока_СегодняДата() экспорт
@@ -2293,13 +2296,12 @@
    Возврат " echo phpinfo(); ";
 КонецФункции
 
-Функция PHPСтрока_ПараметрыВФайлПараметр(Парам) экспорт
-   Возврат " function ParametryVFailParametr($str) { $fd=fopen(""Parametr.txt"",""w"") or die(""не удалось создать файл""); "+
-      "fwrite($fd,$str); fclose($fd); } "; 
+Функция PHPСтрока_ПараметрыВФайлПараметр() экспорт
+   Возврат " function ParametryVFailParametr($str){$fd=fopen(""Parametr.txt"",""w"") or die(""не удалось создать файл"");fwrite($fd,$str);fclose($fd);} "; 
 КонецФункции
 
-Функция ЗаменаОдинарныхКавычек(Текст)
-   Возврат СтрЗаменить(Текст,"'","&#039");;
+Функция СтрокаPHP_ФункцияWriteTextVFile() экспорт
+  Возврат " function WriteTextVFile($NamFile,$text){$fd=fopen($NamFile,""a"") or die(""не удалось записать в файл"");fwrite($fd,$text);fclose($fd);} ";
 КонецФункции
 
 Функция СтрокаPHP_СерверВернутьОтвет(Значение1,ТекстОтвета) экспорт
@@ -2325,7 +2327,8 @@
 КонецФункции    
 
 Функция СтрокаPHP_ФункцииСервера() экспорт
-  Возврат СтрокаPHP_ФункцияLoadFromArrayAjaxPOST()+СтрокаPHP_ФункцияDeleteFile()+СтрокаPHP_ФункцияGeneratePassword();
+  Возврат СтрокаPHP_ФункцияLoadFromArrayAjaxPOST()+СтрокаPHP_ФункцияDeleteFile()+СтрокаPHP_ФункцияGeneratePassword()+
+     PHPСтрока_ПараметрыВФайлПараметр()+СтрокаPHP_ФункцияWriteTextVFile();
 КонецФункции
 
 // Создать таблицу              CREATE TABLE test (id INT AUTO_INCREMENT PRIMARY KEY, maintext TEXT, title VARCHAR(100))
@@ -2339,9 +2342,9 @@
 
 //---------------------  Функции Ajax-OneScript ------------------------------------------------------------------
 Функция СтрокаPHP_OneScriptЗаписатьТекстВФайлИВернутьОтвет(Значение1,ТекстОтвета) экспорт
-   Возврат " $dirtmp='"+КаталогВременныхФайлов+"'; if ($_POST['f'] == "+Значение1+") { $fp=fopen($dirtmp.'Param.txt','w');  $rez=fwrite($fp,'"+ТекстОтвета+"');  fclose($fp);  "+
-     "while (!file_exists($dirtmp.'Otvet.txt')) { } echo readfile($dirtmp.'Otvet.txt'); $filename = $dirtmp.'Otvet.txt'; "+
-	 "DeleteFile($dirtmp.$filename); } ";
+   Возврат " $dirtmp='"+КаталогВременныхФайлов+"'; $filename = $dirtmp.'Otvet.txt';  "+
+     "if ($_POST['f'] == "+Значение1+") { $fp=fopen($dirtmp.'Param.txt','w');  $rez=fwrite($fp,'"+ТекстОтвета+"');  fclose($fp);  "+
+     "while (!file_exists($filename)) { } echo readfile($filename); DeleteFile($filename); } ";
 КонецФункции  
 //---------------------  Функции Ajax-OneScript (конец) ------------------------------------------------------------------
 
@@ -2361,7 +2364,7 @@
 	Запись.ЗаписатьСтроку("if (r_method.toLowerCase() == ""get"" && r_args.length > 0) r_path += ""?""+r_args;  Request.open(r_method,r_path,true); "+
 	  "if (r_method.toLowerCase() == ""post"") { Request.setRequestHeader(""Content-type"",""application/x-www-form-urlencoded; charset=utf-8""); "+
 	  "Request.send(r_args); } else { Request.send(null); } } "+" </script>");
-КонецФункции
+КонецФункции  // отладка  alert(r_args);
 
 Функция Запись_ФункцийRequestReadyState(Error404,State1,State2,State3,State5) экспорт
    Запись.ЗаписатьСтроку("<script type=""text/javascript""> "+
@@ -2389,17 +2392,21 @@
 КонецФункции
 
 Функция СтрокаAjaxJS_ФункцияSubCallBackRequest02() экспорт
-  Возврат " function SubCallBackRequest02(responseText) { ar=responseText.split('==>'); "+
+  Возврат " var bReadFileFromServer=''; "+
+    "function SubCallBackRequest02(responseText) { "+
+	"if (bReadFileFromServer!==''){ responseText='==>ListCommand==>'+bReadFileFromServer+'==>New==>'+responseText; }  "+
+	"ar=responseText.split('==>'); bReadFileFromServer=''; "+
     "if (ar[1]!=='ListCommand') { SubCallBackRequest01(responseText); } else { for (var i = 2; i < ar.length; i=i+3) "+
-	"switch (ar[i+1]) { "+
+	"{ switch (ar[i+1]) { "+
 	"case 'Insert': document.getElementById(ar[i]).innerHTML += ar[i+2]; break; "+
 	"case 'New': document.getElementById(ar[i]).innerHTML = ar[i+2]; break; "+
 	"case 'Delete': document.getElementById(ar[i]).innerHTML = ''; break; "+
-	"case 'PrintCookie': if(get_cookie(ar[i+2])) {document.getElementById(ar[i]).innerHTML+=get_cookie(ar[i+2]);} break; "+
+	"case 'PrintCookie': if(get_cookie(ar[i+2])) { document.getElementById(ar[i]).innerHTML+=get_cookie(ar[i+2]);} break; "+
 	"case 'InsertCookie': InsertCookieNa1God(ar[i],ar[i+2]); break; "+
 	"case 'SendRequest': SendRequest('POST',ar[i],ar[i+2]); break; "+
-	" }}} ";
-КонецФункции  //  if(get_cookie(ar[i+2])){document.getElementById(ar[i]).innerHTML=get_cookie(ar[i+2]);
+	"case 'ReadFileFromServer': ReadFileServer(ar[i+2]); bReadFileFromServer=ar[i]; break; "+
+	" }}}} ";
+КонецФункции  // alert('ReadFileFromServer');
 
 Функция СтрокаAjaxJS_ФункцияFunSetTimeOut(fun,timeout) экспорт
   Возврат " function FunSetTimeOut() { setTimeout("+fun+","+timeout+"); } ";
@@ -2460,6 +2467,7 @@
 Функция СтрокаJS_ФункцииCookie() экспорт 
     Возврат СтрокаJS_ФункцияSet_cookie()+СтрокаJS_ФункцияDelete_cookie()+СтрокаJS_ФункцияGet_cookie()+
 	    СтрокаJS_ФункцияМодальногоВводаСтроки("ModalEnterUserName","Введите ваше имя:")+
+		СтрокаJS_ФункцияМодальногоВводаСтроки("ModalEnterMessage","Введите сообщение:")+
 		 СтрокаJS_ФункцияДобавитьКукСХранен1год();
 КонецФункции
 Функция Запись_ОпределениеФункцийCookie() экспорт 
@@ -2471,9 +2479,7 @@
   Запись_ОпределениеФункцииВыводаВКонсоль("print_username",Divобласть);
   Запись.ЗаписатьСтроку("<script type=""text/javascript""> "+  
    " if(!get_cookie(""username"")){var username=ModalEnterUserName();InsertCookieNa1God(""username"",username);}"+
-   
    "else{var username=get_cookie(""username"");print_username("+Приветствие+");"+
-   
    "print_username(""<br><a href=\""javascript:delete_cookie('username');document.location.reload();\"">"+Изменить+"</a>"");}</script>");
 КонецФункции  
 
@@ -2531,6 +2537,14 @@
   Запись.ЗаписатьСтроку(Строка);
 КонецФункции
 
+//---------------------  Функции Ajax (конец) ------------------------------------------------------------------
+
+//---------------------  Функции JavaScript ------------------------------------------------------------------
+Функция Запись_ЗапускатьФункцJSПриОбновлении(Функ) экспорт
+  Запись.ЗаписатьСтроку("<script type=""text/javascript"">window.onload="+Функ+";</script>");
+КонецФункции
+
+//---------------------  Функции JavaScript (конец) ------------------------------------------------------------------
 
 
 
@@ -2600,11 +2614,3 @@
 КонецФункции
 
 
-//---------------------  Функции Ajax (конец) ------------------------------------------------------------------
-
-//---------------------  Функции JavaScript ------------------------------------------------------------------
-Функция Запись_ЗапускатьФункцJSПриОбновлении(Функ) экспорт
-  Запись.ЗаписатьСтроку("<script type=""text/javascript"">window.onload="+Функ+";</script>");
-КонецФункции
-
-//---------------------  Функции JavaScript (конец) ------------------------------------------------------------------
