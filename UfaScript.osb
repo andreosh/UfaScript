@@ -1,7 +1,7 @@
-// Библиотека Уфа-Скрипт версия 3.4 от 25.06.2017 предназначена для OneScript 
+// Библиотека Уфа-Скрипт версия 3.8 от 17.07.2017 
+// предназначена для языка программирования OneScript 
 // (c) Ошнуров Андрей Михайлович г.Уфа  UfaScript@mail.ru
 
-// Список содержимого библиотеки   UfaScript.bl --------------------------------
 // -------------  переменные --------------------------------------------------------
 //  Экран - массив сегментов на экране
 //  АктОбъекты  - Активные объекты на экране.
@@ -25,7 +25,7 @@
 //?Описание: Возврат строки версии библиотеки UfaScript.osb
 //?Поиск: Инфо 
 Функция ВерсияUfascript(Вид)  экспорт
-   Версия = "3.1"; ДатаВерсии="15.06.2017";
+   Версия = "3.8"; ДатаВерсии="17.07.2017";
    Если      Вид=1 Тогда Возврат Версия;   ИначеЕсли Вид=2 Тогда Возврат ДатаВерсии;
    ИначеЕсли Вид=3 Тогда Возврат Версия+" от "+ДатаВерсии;   КонецЕсли;   Возврат Версия+" от "+ДатаВерсии;
 КонецФункции
@@ -2263,6 +2263,141 @@
 КонецФункции
 
 //---------------------  Шаблоны (конец) ------------------------------------------------------------------
+
+//---------------------  Форма ввода текста и пересылки файла ------------------------------------------------------------------
+
+Функция ОбразОбъектHTMLПолеВвода(М)      
+   М=ОбразОбъектHTMLБазовый(М);   
+   М.Добавить("Перем ИмяПоля экспорт; Перем ТипПоля экспорт; Перем ШиринаПоля экспорт; Перем ТекстКнопки экспорт;");
+   М.Добавить("Функция Конструктор() экспорт ТипПоля=""text""; ШиринаПоля=40; КонецФункции ");
+   М.Добавить("Функция СтрокаHTML() экспорт Возврат ""<input type=""""""+ТипПоля+"""""" name=""""""+ИмяПоля+"""""" "+
+      "size=""+ШиринаПоля+"" value=""+ТекстКнопки+"">"";  КонецФункции ");   
+   Возврат М;
+КонецФункции
+
+//?Вызов: СоздатьОбъектHTMLПолеВвода(ИмяПоля,Ширина=40)
+//?Параметры: ИмяПоля - Уникальное имя поля на английском 
+//?Описание: Создает поле ввода на HTML-странице
+//?Поиск: HTML Клиент Ввод
+Функция СоздатьОбъектHTMLПолеВвода(ИмяПоля,Ширина=40) экспорт      
+  Об=СоздатьООПОбъектИзМассива("",ОбразОбъектHTMLПолеВвода(Новый Массив)); Об.ИмяПоля=ИмяПоля; Об.ШиринаПоля=Ширина;  Возврат Об;
+КонецФункции
+
+Функция ОбразОбъектHTMLВводТекста(М)      
+   М=ОбразОбъектHTMLБазовый(М);   
+   М.Добавить("Перем ИмяПоля экспорт; Перем Строк экспорт; Перем Символов экспорт; Перем Text экспорт;");
+   М.Добавить("Функция Конструктор() экспорт ИмяПоля=""Text1""; Строк=5; Символов=40; Text=""""; КонецФункции ");
+   М.Добавить("Функция СтрокаHTML() экспорт Возврат ""<textarea name=""""""+ИмяПоля+"""""" rows=""""""+Строк+"""""" "+
+       "cols=""""""+Символов+"""""">""+Text+""</textarea>"";  КонецФункции ");   
+   Возврат М;
+КонецФункции
+
+//?Вызов: СоздатьОбъектHTMLВводТекста (ИмяПоля,Строк=5,Символов=40)
+//?Параметры: ИмяПоля - Уникальное имя поля на английском, Строк - число отображаемых строк, Символов - число символов в строке 
+//?Описание: Создает поле для ввода многострочного текста на HTML-странице
+//?Поиск: HTML Клиент Ввод
+Функция СоздатьОбъектHTMLВводТекста(ИмяПоля,Строк=5,Символов=40) экспорт      
+  Об=СоздатьООПОбъектИзМассива("",ОбразОбъектHTMLВводТекста(Новый Массив)); Об.ИмяПоля=ИмяПоля; 
+     Об.Строк=Строк; Об.Символов=Символов;  Возврат Об;
+КонецФункции
+
+Функция ОбразОбъектHTMLФорма(М)      
+   М=ОбразОбъектHTMLБазовый(М);   
+   М.Добавить("Перем ФайлСервера экспорт; Перем Метод экспорт;");
+   М.Добавить("Функция Конструктор() экспорт Метод=""post""; ФайлСервера=""Server.php""; КонецФункции ");
+   М.Добавить("Функция СтрокаHTML(HTMLКод) экспорт Возврат ""<form enctype=""""multipart/form-data"""" action=""""""+ФайлСервера+"""""" "+
+      "metod=""""""+Метод+"""""" >""+HTMLКод+""</form>"";  КонецФункции ");   
+   Возврат М;
+КонецФункции
+
+//?Вызов: СоздатьОбъектHTMLФорма()
+//?Параметры: Отсутствуют 
+//?Описание: Создает форму на HTML-странице
+//?Поиск: HTML Клиент Форма Ввод
+Функция СоздатьОбъектHTMLФорма() экспорт      
+  Об=СоздатьООПОбъектИзМассива("",ОбразОбъектHTMLФорма(Новый Массив));  Возврат Об;
+КонецФункции
+
+Функция СтрокаОднаЯчейкаТаблицы(Текст,Выравнивать=1) экспорт
+  Если Выравнивать=1 Тогда В="left"; ИначеЕсли Выравнивать=2 Тогда В="center"; Иначе В="rigth"; КонецЕсли; 
+  Возврат "<tr><td style=""text-align:"+В+""">"+Текст+"</td></tr>";
+КонецФункции
+
+// На основе примера http://www.proinfosystem.com/articles/php-script.html
+Функция Строка_HTMLФормаДляОтправкиСообщений() экспорт
+  HTMLТаблицаНачало="<table border=""0"" width=""30"" cellspacing=""0"">";
+
+  HTMLТаблицаСтрока1=СтрокаОднаЯчейкаТаблицы("<b>Поле N1</b>");
+	
+    ПолеВвода=СоздатьОбъектHTMLПолеВвода("Pole1");
+  HTMLТаблицаСтрока2=СтрокаОднаЯчейкаТаблицы(ПолеВвода.СтрокаHTML());
+
+  HTMLТаблицаСтрока3=СтрокаОднаЯчейкаТаблицы("<b>Поле N2</b>");
+
+    ВводТекста=СоздатьОбъектHTMLВводТекста("Pole2");
+  HTMLТаблицаСтрока4=СтрокаОднаЯчейкаТаблицы(ВводТекста.СтрокаHTML());
+
+  HTMLТаблицаСтрока5=СтрокаОднаЯчейкаТаблицы("<b>Присоединить файл(не более 2Мбайт):</b>");
+
+    ПолеВвода.ИмяПоля="fail"; ПолеВвода.ТипПоля="file";   // кнопка присоединить файл
+  HTMLТаблицаСтрока6=СтрокаОднаЯчейкаТаблицы(ВводТекста.СтрокаHTML());
+
+     ПолеВвода.ИмяПоля="submit";  ПолеВвода.ТипПоля="submit";  ПолеВвода.ТекстКнопки="Отправить";
+	 СтрокаКнопкиОтправить=ПолеВвода.СтрокаHTML();
+     ПолеВвода.ИмяПоля="res";  ПолеВвода.ТипПоля="reset";  ПолеВвода.ТекстКнопки="Очистить";
+	 СтрокаКнопкиОчистить=ПолеВвода.СтрокаHTML();
+  HTMLТаблицаСтрока7="<tr><td height=""30""><center>"+СтрокаКнопкиОтправить+"___"+СтрокаКнопкиОчистить+"</center></td></tr></table>";
+
+  HTMLКод=HTMLТаблицаНачало+HTMLТаблицаСтрока1+HTMLТаблицаСтрока2+HTMLТаблицаСтрока3+HTMLТаблицаСтрока4+HTMLТаблицаСтрока5+
+     HTMLТаблицаСтрока6+HTMLТаблицаСтрока7;
+
+   Форма = СоздатьОбъектHTMLФорма();  Возврат Форма.СтрокаHTML(HTMLКод);
+КонецФункции
+
+Функция Строка_PHPФормаДляОтправкиСообщений() экспорт
+  Возврат "<?php $myemail=""""; $refreshpage=""Страница с формой""; $maxmsg=""1500""; "+
+      "$back_pole1=""<script language='JavaScript'>alert('Поле N1 не введено.');</script>""; "+
+      "$back_pole2=""<script language='JavaScript'>alert('Произошла ошибка. Ваше сообщение или пустое или превышает $maxmsg "+
+	  "символов.');</script>"";$send_mail=""<script language='JavaScript'>alert('Ваше сообщение успешно отправлено.');</script>"";"+
+      "$size_big=""<script language='JavaScript'>alert('Размер файла более 2Мбайт.');</script>""; "+
+      "$pole1=$_POST['pole1']; $pole2=$_POST['pole2'];"+
+      "if($pole1==""""){print""$back_pole1"";print""<script language='JavaScript'><!--"+ 
+    "function reload(){location=\""$refreshpage\"";setTimeout('reload()',0);}//--></script>"";exit;} "+
+      "if($pole2==""""||strlen($pole2)>$maxmsg){print""$back_pole2"";print""<script language='JavaScript'><!-- "+
+    "function reload(){location=\""$refreshpage\"";setTimeout('reload()',0);}//--></script>"";exit;}"+
+      "if(empty($_FILES['fail']['tmp_name'])){$myfail='Файл не был добавлен.';}"+
+      "if(!empty($_FILES['fail']['tmp_name'])){if($_FILES['fail']['size']>2097152){print ""$size_big"";"+
+      "print ""<script language='JavaScript'><!--function reload(){location=\""$refreshpage\"";setTimeout('reload()',0);}//-->"+
+	  "</script>"";exit;}else{$fail_name=$_FILES['fail']['name']; $fail_size=$_FILES['fail']['size'];"+
+      "$myfail='Имя: '.$fail_name.' Размер: '.$fail_size.' Находится в папке fails на сервере'; $uploaddir='fails/';"+ 
+      "$uploadfiles=$uploaddir.basename($_FILES['fail']['name']); if(copy($_FILES['fail']['tmp_name'],$uploadfile))"+
+      "{echo ""<h3>Файл успешно загружен на сервер</h3>"";}else{echo ""<h3>Ошибка! Не удалось загрузить файл на сервер!</h3>"";"+
+	  "exit;}}}$headers=""Content-Type:text/plain;charset=utf-8\r\n""; $allmsg='1. Поле N 1: '.$pole1.chr(13).chr(10)."+
+      "'2. Сообщение: '.$pole1.chr(13).chr(10).'3. Файл: '.$myfail.chr(13).chr(10);mail($myemail,""Сообщение"",$allmsg,$headers);"+
+      "print""$send_mail"";print ""<script language='JavaScript'><!--function reload(){location=\""$refreshpage\"";"+
+      "setTimeout('reload()',0);}//--></script>""; ?>";
+КонецФункции
+
+Функция ОбразОбъектHTMLФормаДляОтправкиСообщений(М)      
+   М=ОбразОбъектHTMLБазовый(М);   
+   М.Добавить("Перем ФайлСервера экспорт; Перем Метод экспорт;");
+   М.Добавить("Функция Конструктор() экспорт Метод=""post""; ФайлСервера=""Server.php""; КонецФункции ");
+   М.Добавить("Функция СтрокаHTML() экспорт Возврат UfaScript.Строка_HTMLФормаДляОтправкиСообщений();  КонецФункции ");   
+   М.Добавить("Функция СтрокаPHP() экспорт Возврат UfaScript.Строка_PHPФормаДляОтправкиСообщений();  КонецФункции ");   
+   Возврат М;
+КонецФункции
+
+//?Вызов: СоздатьОбъектHTMLФормаДляОтправкиСообщений()
+//?Параметры: Отсутствуют 
+//?Описание: Создает форму для отправки сообщений на HTML-странице
+//?Поиск: HTML Клиент Форма Ввод
+Функция СоздатьОбъектHTMLФормаДляОтправкиСообщений() экспорт      
+  Об=СоздатьООПОбъектИзМассива("",ОбразОбъектHTMLФормаДляОтправкиСообщений(Новый Массив));  Возврат Об;
+КонецФункции
+
+
+//---------------------  Форма ввода текста и пересылки файла (конец) ------------------------------------------------------------------
+
 //Имя: Запись_CSSДляВерхнихКартинок()
 //Описание: Установить CSS для трех верхних картинок
 //Категория: Joomla CSS 
@@ -2400,7 +2535,7 @@
 //---------------------  Функции PHP (конец) ------------------------------------------------------------------
 
 //---------------------  Функции Ajax-OneScript ------------------------------------------------------------------
-//?Вызов: СтрокаPHP_OneScriptЗаписатьТекстВФайлИВернутьОтвет(Значение1,ТекстЗапроса)
+//?Вызов: СтрокаPHP_OneScriptЗаписатьТекстВФайлИВернутьОтвет (Значение1,ТекстЗапроса)
 //?Параметры: Значение1 - код запроса, ТекстЗапроса 
 //?Описание: Создает php-код на сервере для передачи запроса через файл Param.txt другому приложению и возврат ответа клиенту из файла otvet.txt.  
 //?Далее:       Например, можно организовать связь между запущенной программой OneScript и клиентом.
@@ -2589,7 +2724,7 @@
     Запись.ЗаписатьСтроку("<script type=""text/javascript"">"+СтрокаJS_ФункцииCookie()+"</script>");
 КонецФункции
 	   
-//?Вызов: Запись_ОпределениеФункцийРегистрация(Divобласть,Приветствие,Изменить)
+//?Вызов: Запись_ОпределениеФункцийРегистрация (Divобласть,Приветствие,Изменить)
 //?Параметры: Divобласть- div-Область, в которой высвечивается приветствие, Приветствие - текст приветствия, 
 //?Описание: Определяет JS-код у клиента для узнавания и регистрации имени клиента.
 //?Поиск: JS Запись Клиент Input cookie
@@ -2643,9 +2778,9 @@
 //?Поиск: JS Строка Клиент 
 Функция СтрокаJS_ФункцияjspsGetProgramInfo() экспорт  //стр.112
   Строка = "var JSPS_GPI_MSIE=""Microsoft Internet Explorer""; var JSPS_GPI_OPERA=""Opera""; var JSPS_GPI_MOZILLA=""Mozilla""; "+
-  "var JSPS_GPI_FOREFOX=""Firefox""; var JSPS_GPI_NAVIGATOR=""Navigator""; function ProgramInfo(){this.programName=""""; "+
+  "var JSPS_GPI_FIREFOX=""Firefox""; var JSPS_GPI_NAVIGATOR=""Navigator""; function ProgramInfo(){this.programName=""""; "+
   "this.programVersion=""""; this.OperaCompatibilityMode=""""; this.programPlatform=""""; this.programLanguage=""""; "+
-  "this.systemLanguage=""""; } function jspsGetProgramInfo(){var piObj=new ProgramInfo(); var ua=navigator.userAgent; "+
+  "this.systemLanguage=""""; } function jspsGetProgramInfo(){var piObj=new ProgramInfo(); var ua=navigator.userAgent;"+
   "var an=navigator.appName; var isntOpera=(ua.indexOf(JSPS_GPI_OPERA)==-1); var n1,n2; switch (an) {"+
   "case JSPS_GPI_MSIE: piObj.programLanguage=navigator.browserLanguage; if (isntOpera){piObj.programName=an; n1=ua.IndexOf(""MSIE"")+5; "+
   "n2=ua.IndexOf("";"",n1); piObj.programVersion=ua.substring(n1,n2); n1=n2+2; n2=ua.indexOf("";"",n1); piObj.programPlatform="+
@@ -2653,10 +2788,10 @@
   "n2=ua.length; piObj.programVersion=ua.substring(n1,n2); piObj.OperaCompatibilityMode=""MSIE 6.0""; n1=ua.indexOf(""MSIE"")+10; "+
   "n2=ua.indexOf("";"",n1); piObj.programPlatform=ua.substring(n1,n2);} break; "+
   "case ""Netscape"": if (isntOpera) {n1=ua.indexOf("";"")+1; n1=ua.indexOf("";"",n1)+2; n2=ua.indexOf("";"",n1); "+
-  "piObj.programPlatform=ua.substring(n1,n2); if (ua.indexOf(JSPS_GPI_FIREFOX)!=-1) {piObj.programName=JSPS_GPI_FOREFOX; "+
+  "piObj.programPlatform=ua.substring(n1,n2);if (ua.indexOf(JSPS_GPI_FIREFOX)!=-1) {piObj.programName=JSPS_GPI_FOREFOX; "+
   "n1=ua.lastIndexOf(""/"")+1; n2=ua.length; piObj.programVersion=ua.substring(n1,n2); piObj.programLanguage=navigator.language; "+
   "} else {piObj.programLanguage=navigator.language.substring(0,2); if (ua.indexOf(""Netscape"")!=-1){piObj.programName="+
-  "JSPS_GPI_NAVIGATOR; n1=ua.lastIndexOf(""/"")+1; n2=ua.length; piObj.programVersion=ua.substring(n1,n2); } else { piObj.programName="+
+  "JSPS_GPI_NAVIGATOR; n1=ua.lastIndexOf(""/"")+1; n2=ua.length; piObj.programVersion=ua.substring(n1,n2); } else {piObj.programName="+
   "JSPS_GPI_MOZILLA; n1=ua.indexOf(""rv:"")+3; n2=ua.indexOf("")""); piObj.programVersion=ua.substring(n1,n2); }}} else {piObj.programName="+
   "JSPS_GPI_OPERA; n1=ua.lastIndexOf("" "")+1; n2=ua.length; piObj.programVersion=ua.substring(n1,n2); piObj.OperaCompatibilityMode="+
   " ""Mozila 5.0""; n1=ua.indexOf(""("")+1; n2=ua.indexOf("";"",n1); piObj.programPlatform=ua.substring(n1,n2); piObj=programLanguage="+
@@ -2735,6 +2870,8 @@
 //-------------------- Функции JavaScript Динамичная таблица DynTable -----------------------------------------------
 Функция ОбразОбъектJSТаблица(М)      
    М=ОбразОбъектHTMLБазовый(М);   
+   М.Добавить("Перем ФайлСервера экспорт; Перем Метод экспорт;");
+   М.Добавить("Функция Конструктор() экспорт Метод=""post""; ФайлСервера=""Server.php""; КонецФункции ");
 
    Возврат М;
 КонецФункции
@@ -2744,14 +2881,15 @@
 КонецФункции
 
 Функция Строка_ФункцииconstructorTable(Заголовок) экспорт
-  Строка="<script type=""text/javascript"">function constructorTable(pRowNumber,pColNumber,pSectionCode){switch(pSectionCode){"+
+  Строка=Строка_JSКод("function constructorTable(pRowNumber,pColNumber,pSectionCode){switch(pSectionCode){"+
   "case JSPS_DT_TS_CAPTION: return '"+Заголовок+"'; break; case JSPS_DT_TS_HEAD: return tableHead[0][pColNumber]; break; "+
-  "case JSPS_DT_TS_FOOT: return tableFoot[0][pColNumber];; break; case JSPS_DT_TS_BODY: return tableBody[pRowNumber][pColNumber]; break; }}</script>";  Возврат Строка;
+  "case JSPS_DT_TS_FOOT: return tableFoot[0][pColNumber];; break; case JSPS_DT_TS_BODY: return tableBody[pRowNumber][pColNumber]; break; }}");  
+  Возврат Строка;
 КонецФункции
 
 Функция Строка_ФункцииDynamicTable() экспорт
   Строка="<script type=""text/javascript"">var JSPS_DT_SPANNED_HORZ=""!!!JSPS_DT_SPANNED_HORZ!!!""; var JSPS_DT_SPANNED_VERT=""!!!JSPS_DT_SPANNED_VERT!!!""; "+
-  "var JSPS_DT_TS_CAPTION=0; var JSPS_DT_TS_HEAD=1; var JSPS_DT_TS_BODY=2; var JSPS_DT_TS_FOOT=3; "+
+  "var JSPS_DT_TS_CAPTION=0; var JSPS_DT_TS_HEAD=1; var JSPS_DT_TS_BODY=2; var JSPS_DT_TS_FOOT=3; var JSPS_DT_TS_FILTER="""";"+
   "function DynamicTable(pElement,pID,pClassName){ this.element=pElement; this.id=(pID) ? pID: ""tab""+this; this.table=null; "+
     "this.className=(pClassName) ? pClassName : """"; this.createTable=mjspsDTCreateTable; this.createTableAdvanced=mjspsCreateTableAdvanced; "+
     "this.showTable=mjspsDTShowTable; this.removeTable=mjspsDTRemoveTable; this.createTableTag=mjspsDTCreateTableTag; "+
@@ -2793,16 +2931,81 @@
       "topRowNumber=pFirstRowNumber; var lastRowNumber=pFirstRowNumber+StepRow-1; if (lastRowNumber>tableBody.length-1) "+
 	  "lastRowNumber=tableBody.length-1; tableObject.createTableAdvanced(constructorTable,tableBody.length,tableHead[0].length,1,1,pFirstRowNumber,lastRowNumber); "+
 	  "tableObject.showTable();  } "+
-  "function jspsFilterTable(pTable,pFilterFunction,pAdditional){alert('Фильтрация пока не сделана'); var piObject=jspsGetProgramInfo();"+
-      "varIE=(piObject.ProgramName==JSPS_GPI_MSIE);var bodySectionObject=pTable.getElementsByTagName(""TBODY"");bodySectionObject=bodySectionObject[0]; "+
-      "for (var i=0;i<bodySectionObject.childNodes.length; i++){var rowObject=bodySectionObject.childNodes[i];rowObject.style.display="+
-      "(pFilterFunction(rowObject,pAdditional))?((isIE)?""block"":""table-row""):""none"";}} "+
+  "function jspsFilterTable(pTable,pFilterFunction,pAdditional){var piObject=jspsGetProgramInfo(); "+
+      "var isIE=(piObject.ProgramName==JSPS_GPI_MSIE);var bodySectionObject=pTable.getElementsByTagName(""TBODY"");bodySectionObject=bodySectionObject[0]; "+
+      "maxrow=bodySectionObject.childNodes.length; for (var i=0;i<maxrow; i++){var rowObject=bodySectionObject.childNodes[i];"+
+	  "rowObject.style.display=(pFilterFunction(rowObject,pAdditional))?((isIE)?""block"":""table-row""):""none"";}} "+
   "function jspsClearFilterTable(pTable){var piObject=jspsGetProgramInfo();var isIE=(piObject.programName==JSPS_GPI_MSIE); "+
-      "var bodySectionObject=bodySectionObject[0];for (var i=0;i<bodySectionObject.childNodes.length;i++) bodySectionObject.childNodes[i].style.display="+
+      "var bodySectionObject=bodySectionObject[0];for(var i=0;i<bodySectionObject.childNodes.length;i++) bodySectionObject.childNodes[i].style.display="+
       "(isIE)?""block"":""table-row"";}"+
-  "function filterTable(pRowObject,pAdditional){return (pRowObject.childNodes[0].firstChild.nodeValue==pAdditional);}"+
-  СтрокаJS_ФункцияjspsGetProgramInfo()+СтрокаJS_ФункцияМодальногоВводаСтроки("ModalSetKolStr","Ведите количество записей на одной странице")+
+  "function jspsFilterNewTable(pTable,pFilterFunction,pAdditional){var i2=0; tableBody.splice(0,tableBody.length);maxrow=tableCopy.length;"+
+      "for(var i=0;i<maxrow; i++){if(pFilterFunction(tableCopy[i],pAdditional)){table1=new Array();for(var i1=0;i1<tableCopy[i].length;i1++)"+
+	  "{table1[i1]=tableCopy[i][i1];}tableBody[i2]=table1;i2++;}}putTable(0,JSPS_PAGE_SIZE);} "+ 
+  "function jspsNewRowArray(pRow){var pNewRow=new Array();for(var i=0;i<pRow.length;i++){pNewRow[i]=pRow[i];}return pNewRow} "+ 
+  "function filterTable(pRowObject,pAdditional){retfind=false;var arr=pAdditional.split('==>');pAdditional=arr[0];"+
+      "if(arr.length>1){i=arr[1]-1; if(i>pRowObject.childNodes.length-1){alert('Нет такого номера колонки');return true;} "+
+	  "reg=pRowObject.childNodes[i].firstChild.nodeValue; if(reg.indexOf(pAdditional)+1>0){retfind=true;}return retfind;}"+
+      "for(var i=0;i<pRowObject.childNodes.length;i++){reg=pRowObject.childNodes[i].firstChild.nodeValue; if(reg.indexOf(pAdditional)>=0){retfind=true;}} "+
+	  "return retfind;}"+ 
+  "function filterNewTable(pRowObject,pAdditional){retfind=false;var arr=pAdditional.split('==>');pAdditional=arr[0];"+
+      "if(arr.length>1){i=arr[1]-1; if(i>pRowObject.length-1){alert('Нет такого номера колонки');return true;} "+
+	  "reg=pRowObject[i]; if(reg.indexOf(pAdditional)+1>0){retfind=true;}return retfind;}"+
+      "for(var i=0;i<pRowObject.length;i++){reg=pRowObject[i];  if(reg.indexOf(pAdditional)>=0){retfind=true;}} "+
+	  "return retfind;}"+ 
+   СтрокаJS_ФункцияjspsGetProgramInfo()+СтрокаJS_ФункцияМодальногоВводаСтроки("ModalSetKolStr","Ведите количество записей на одной странице")+
+   СтрокаJS_ФункцияМодальногоВводаСтроки("ModalSetFilter","Ведите строку поиска")+
       "</script>";  Возврат Строка;
+КонецФункции   // reg.test(pRowObject.childNodes[i].firstChild.nodeValue)   pRowObject.childNodes[i].firstChild.nodeValue==pAdditional
+
+Функция ФормируемКолонки(М)
+  Строка="'"+М[0]+"'";  Для сч=1 По М.Количество()-1 Цикл   Строка = Строка+",'"+М[сч]+"'";  КонецЦикла;  Возврат Строка;
+КонецФункции
+
+//?Вызов: СтрокаJS_ArrayNamTable(М2,NamTable)
+//?Параметры: М2 - двухмерный массив таблицы, NamTable - имя JS-таблицы (английскими буквами)
+//?Описание: Формирует JS-строку для создания двухмерной таблицы на JavaScript
+//?Поиск: JS Клиент Таблица 
+Функция СтрокаJS_ArrayNamTable(М2,NamTable)  экспорт
+  Строка="";  Для сч=0 По М2.Количество()-1 Цикл  Строка = Строка+" "+NamTable+"["+сч+"]=new Array("+ФормируемКолонки(М2[сч])+"); ";  КонецЦикла;
+  Возврат Строка;
+КонецФункции
+
+//?Вызов: СоздатьДвухмерныйМассивДляHelp(ИмяФайла)
+//?Параметры: ИмяФайла - файл, из которого будет формироваться двухмерный массив 
+//?Описание: Возвращает двухмерный массив, сформированный из файла по ключевым символам "//?" (используется для создание справки по функциям)
+//?Поиск: OneScript Массив
+Функция СоздатьДвухмерныйМассивДляHelp(ИмяФайла) экспорт
+  Текст = Новый ЧтениеТекста(ИмяФайла, КодировкаТекста.UTF8);
+  МассивФункций = Новый Массив;  сч=0;  K=0; N=0;
+  Стр = Текст.ПрочитатьСтроку();  K=K+1;
+  Пока Стр <> Неопределено  Цикл 
+      Стр = СокрЛП(ЗаменаОдинарныхКавычек(Стр));
+      Если СтрНачинаетсяС(Стр,"//?") Тогда 
+	     Если СтрНачинаетсяС(Стр,"//?Вызов: ") Тогда СубМассив=Новый Массив; сч=0; МассивФункций.Добавить(СубМассив); N=N+1;
+	             СубМассив.Добавить(N); СубМассив.Добавить(K); Стр=СокрЛП(СтрЗаменить(Стр,"//?Вызов: ",""));  СубМассив.Добавить(Стр);  сч=сч+2;  
+	     ИначеЕсли СтрНачинаетсяС(Стр,"//?Далее: ")     Тогда Стр=СокрЛП(СтрЗаменить(Стр,"//?Далее: ",""));     СубМассив[сч] = СубМассив[сч]+Стр; 
+	     ИначеЕсли СтрНачинаетсяС(Стр,"//?Параметры: ") Тогда Стр=СокрЛП(СтрЗаменить(Стр,"//?Параметры: ","")); СубМассив.Добавить(Стр);  сч=сч+1;  
+	     ИначеЕсли СтрНачинаетсяС(Стр,"//?Описание: ")  Тогда Стр=СокрЛП(СтрЗаменить(Стр,"//?Описание: ",""));  СубМассив.Добавить(Стр);  сч=сч+1;  
+	     ИначеЕсли СтрНачинаетсяС(Стр,"//?Поиск: ")     Тогда Стр=СокрЛП(СтрЗаменить(Стр,"//?Поиск: ",""));     СубМассив.Добавить(Стр);  сч=сч+1;  
+	     КонецЕсли;
+	  КонецЕсли;
+      Стр = Текст.ПрочитатьСтроку(); K=K+1;  
+  КонецЦикла;
+  Текст.Закрыть();  Возврат МассивФункций;  
+КонецФункции
+
+//?Вызов: Строка_СозданиеJSТаблицы (МассивТаблицы,МассивЗаголовков)
+//?Параметры: МассивТаблицы - двухмерный массив содержимого таблицы, МассивЗаголовков - двухмерный массив заголовка таблицы
+//?Описание: Формирует JS-строку и CSS-строку для создания двухмерной таблицы на JavaScript
+//?Поиск: JS Клиент Таблица CSS
+Функция Строка_СозданиеJSТаблицы(МассивТаблицы,МассивЗаголовков)  экспорт
+  Таблица="<style type=""text/css""> .mytable {border: thin solid #CCCCCC;} .mytable td {border: thin solid #CCCCCC; .found {background:#89DAD0;} } </style>"+
+    "<script type=""text/javascript"">var tableBody=new Array(); "+СтрокаJS_ArrayNamTable(МассивТаблицы,"tableBody")+"var tableCopy=tableBody.concat();</script>"+
+    Строка_ФункцииDynamicTable()+Строка_ФункцииconstructorTable("")+"<script type=""text/javascript"">var topRowNumber=0; var JSPS_PAGE_SIZE=7000; "+
+    "var tableHead=new Array(); "+СтрокаJS_ArrayNamTable(МассивЗаголовков,"tableHead")+
+    "var tableFoot=new Array(); tableFoot[0]=new Array(""Итого"","" ""); var tableObject=new DynamicTable(document.body,""Tabl"",""mytable""); "+
+    " putTable(0,JSPS_PAGE_SIZE);</script>";
+  Возврат Таблица;
 КонецФункции
 
 // Функции для поиска в таблице (не отлажены)
@@ -2828,11 +3031,47 @@
   "</script>");
 КонецФункции
 
+Функция НастройкаКнопокНавигации(Об)
+  Об.ОтступСверхуСнизу=3;  Об.ОтступОтТекстаСверху=3; Об.ОтступОтТекстаПоКраям=3; Об.ОтступПоКраям=3; Об.ЦветФона="#6CE11E";  Возврат Об;
+КонецФункции
+
+Функция ГенераторHTMLДокументации(ИмяФайла,ИмяСоздаваемогоФайла,Заголовок) экспорт
+  МассивФункций =СоздатьДвухмерныйМассивДляHelp(ИмяФайла); 
+  МассивЗаголовков = Новый Массив;  СубМассив=Новый Массив; СубМассив.Добавить("Номер");
+  СубМассив.Добавить("Строка"); СубМассив.Добавить("Вызов"); СубМассив.Добавить("Параметры"); СубМассив.Добавить("Описание"); СубМассив.Добавить("Слова"); 
+  МассивЗаголовков.Добавить(СубМассив);
+  КнопкаЗаголовок   = СоздатьОбъектHTMLКнопка("Zag");  НастройкаКнопокНавигации(КнопкаЗаголовок);  
+  КнопкаЗаголовок.ПравыйЦветГрадиента="#8DEBE1";  КнопкаЗаголовок.ЛевыйЦветГрадиента="#F0FAD3";  КнопкаЗаголовок.ЦентрЦветГрадиента="#FCCFFE";
+  Заголовок1  = КнопкаЗаголовок.СтрокаДляAjax(Заголовок,1,"","");
+  КнопкиНавигации   = СоздатьОбъектHTMLКнопка("Nav");  НастройкаКнопокНавигации(КнопкиНавигации);
+  КнНачало = КнопкиНавигации.СтрокаДляAjax("<< В начало",5,"","putTable(0,JSPS_PAGE_SIZE);");  // Строка для Ajax может использоваться и без Ajax
+  КнНазад  = КнопкиНавигации.СтрокаAjaxHTML("< Назад",5,"","putTable(topRowNumber-JSPS_PAGE_SIZE,JSPS_PAGE_SIZE);");
+  КнВперед = КнопкиНавигации.СтрокаAjaxHTML("Вперед >",5,"","putTable(topRowNumber+JSPS_PAGE_SIZE,JSPS_PAGE_SIZE);");  
+  КнВКонец = КнопкиНавигации.СтрокаAjaxHTML("В конец >>",5,"","putTable(tableBody.length-JSPS_PAGE_SIZE,JSPS_PAGE_SIZE);");  
+  КнопкиНастроек   = СоздатьОбъектHTMLКнопка("Op");  НастройкаКнопокНавигации(КнопкиНастроек); КнопкиНастроек.ЦветФона="#50C0D8";
+  КолЗаписей="document.getElementById('KolZap').innerHTML=JSPS_PAGE_SIZE;"; 
+  КнНаСтранице = КнопкиНастроек.СтрокаДляAjax("Количество записей на странице<div id=KolZap></div>",5,"",
+            "k=ModalSetKolStr(); JSPS_PAGE_SIZE=parseInt(k);  putTable(0,JSPS_PAGE_SIZE);"+КолЗаписей);
+  КнопкиФильтра=СоздатьОбъектHTMLКнопка("Filt");  НастройкаКнопокНавигации(КнопкиФильтра); КнопкиФильтра.ЦветФона="#83DCF5";
+  КнФильтр=КнопкиФильтра.СтрокаДляAjax("Фильтровать",5,"","JSPS_DT_TS_FILTER=ModalSetFilter(); jspsFilterNewTable(tableObject.table,filterNewTable,JSPS_DT_TS_FILTER);");
+  DivHeader=СоздатьОбъектCSSDiv("Header",Заголовок1);                 
+    Divheader.ТипВысота=1;  Divheader.Высота=40; Divheader.ЦветФона="#eefdfd"; Divheader.ТипШирина=2; Divheader.Ширина=100;
+  DivNav=СоздатьОбъектCSSDiv("Nav",КнНачало+КнНазад+КнВперед+КнВКонец+КнНаСтранице+КнФильтр);
+  DivTabl=СоздатьОбъектCSSDiv("Tabl");  DivTabl.ЦветФона="#FCCDFA";
+  DivBaza=СоздатьОбъектCSSDiv("Baza",Divheader.СтрокаHTML()+DivNav.СтрокаHTML()+Строка_СозданиеJSТаблицы(МассивФункций,МассивЗаголовков)+
+      Строка_JSКод(КолЗаписей));      
+  DivBaza.ТипШирина=2; DivBaza.Ширина=100; 
+  Шаблон=СоздатьОбъектHTMLШаблонCSSDiv();         Шаблон.ИмяФайла=ИмяСоздаваемогоФайла;
+  Шаблон.Div(DivBaza).Div(DivHeader).Div(DivNav).Div(DivTabl);
+  Шаблон.Инициализация();
+  ПРОЦЕСС_Окончание();
+КонецФункции
+
 //---------------------  Функции JavaScript (конец) ------------------------------------------------------------------
 
 //---------------------  Функции для OneScript-сервера  ------------------------------------------------------------------
 
-//?Вызов: СтартСерверТранслятора(Joomla=Ложь,ЗадержкаВOneScript1=1000,ЗадержкаВPHPСервере1=1000,ЗадержкаВJSКлиенте1=2000)
+//?Вызов: СтартСерверТранслятора (Joomla=Ложь, ЗадержкаВOneScript1=1000, ЗадержкаВPHPСервере1=1000, ЗадержкаВJSКлиенте1=2000)
 //?Параметры: Joomla - для Joomla или нет, Задержка - задержки в микросекундах между запросами.
 //?Описание: Создает страницу клиента и запускает сервер-транслятор запросов к внешнему серверу и передачи ответов от него клиенту
 //?Поиск: PHP Сервер  
@@ -2860,7 +3099,7 @@
 КонецФункции
 
 
-//?Вызов:  Строка_СформироватьКомандыКлиенту(Строка,Разделитель="||")
+//?Вызов:  Строка_СформироватьКомандыКлиенту (Строка,Разделитель="||")
 //?Параметры: Строка - строка с элементами команд, элементы разделены символом Разделитель
 //?Описание: Формирует строку команд для клиента, которую посылает сервер 
 //?Поиск: OneScript Сервер Клиент 
@@ -2872,7 +3111,7 @@
   Возврат Строка2+"==>";
 КонецФункции
 
-//?Вызов:  МассивОтветовКлиентам_Добавить(КодКлиента,ОтветСервера="")
+//?Вызов:  МассивОтветовКлиентам_Добавить (КодКлиента,ОтветСервера="")
 //?Параметры: КодКлиента,  ОтветСервера=""
 //?Описание: Добавляет ответ клиенту
 //?Поиск: OneScript Сервер Клиент 
@@ -2934,7 +3173,7 @@
   ИмяФайлаСОтветом=Лев(ОтветОтOneScript,Поз-1)+".otv";  
   Файл = Новый Файл(Каталог+ИмяФайлаСОтветом);
   Если НЕ Файл.Существует() Тогда          // Если файла с ответом нет, значит сервер прошлый ответ уже принял
-    Otvet = НайтиОтветДляКлиента(ОтветОтOneScript,МассивОтветовКлиентам);
+    НайтиОтветДляКлиента(ИмяФайлаСОтветом,МассивОтветовКлиентам);
     Ф = Новый ЗаписьТекста;	Ф.Открыть(Каталог+ИмяФайлаСОтветом); 	Ф.ЗаписатьСтроку(Ответ); 
     Ф.Закрыть();  Возврат Истина;  // Ответ передан PHP-Серверу
   КонецЕсли;
@@ -2961,7 +3200,8 @@
 	  "$tmpdir='"+Каталог+"';$filename='09'.$rest.'.zap';  usleep_file_exists($tmpdir.$filename); $fp=fopen($tmpdir.$filename,'x'); "+
 	  "$rez=fwrite($fp,$data);fclose($fp); $filename=$filename.'.otv'; while (!file_exists($tmpdir.$filename)) {usleep("+Задержка+");}  "+                    
       "$data=readfile($tmpdir.$filename);  deletefile($tmpdir.$filename); return $data;}"+
-	  "function usleep_file_exists($filename){while (file_exists($filename)) {usleep("+Задержка+");}} ?>");  
+	  "function usleep_file_exists($filename){while (file_exists($filename)) {usleep("+Задержка+");}} "+
+	  "?>");  
   Запись.Закрыть();  
 КонецФункции
 
